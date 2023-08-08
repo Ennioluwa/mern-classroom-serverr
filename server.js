@@ -28,6 +28,7 @@ mongoose
   .catch((err) => console.log("DB CONNECTION ERR => ", err));
 
 // apply middlewares
+app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

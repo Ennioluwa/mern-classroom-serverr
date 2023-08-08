@@ -15,11 +15,10 @@ const signin = async (req, res) => {
     user.password = undefined;
     console.log(token);
     res.cookie("token", token, {
-      secure: true,
-      domain: process.env.CLIENT_URL,
-      sameSite: "none",
+      // httpOnly: true,
+      secure: true, // only works on https
+      // sameSite: "none",
     });
-    res.cook;
     return res.json({ success: "Sign in successful", user });
   } catch (error) {
     return res.status(402).json({ error: "Could not sign in" });
