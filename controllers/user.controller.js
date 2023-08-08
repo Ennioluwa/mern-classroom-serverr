@@ -114,16 +114,18 @@ const remove = async (req, res, next) => {
 
 const isEducator = async (req, res, next) => {
   const id = req.user._id;
-  user.findById(id).exec((err, user) => {
-    if (err || !user) {
+  user
+    .findById(id)
+    .then((data) => {
+      if (user.educator) {
+        next();
+      } else {
+        return res.status(401).send({ error: "User not an educator." });
+      }
+    })
+    .catch((err) => {
       return res.status(401).send({ error: "User not found." });
-    }
-    if (user.educator) {
-      next();
-    } else {
-      return res.status(401).send({ error: "User not an educator." });
-    }
-  });
+    });
 };
 
 module.exports = {

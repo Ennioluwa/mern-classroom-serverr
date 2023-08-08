@@ -61,11 +61,11 @@ const listByInstructor = (req, res) => {
   course
     .find({ instructor: req.user._id })
     .populate("instructor", "_id name")
-    .exec((err, data) => {
-      if (err || !data) {
-        return res.status(400).json({ error: "Could not get links" });
-      }
+    .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      return res.status(400).json({ error: "Could not get links" });
     });
 };
 const courseById = (req, res, next, id) => {
@@ -73,12 +73,12 @@ const courseById = (req, res, next, id) => {
     course
       .findById(id)
       .populate("instructor", "_id name")
-      .exec((err, data) => {
-        if (err || !data) {
-          return res.status(400).json({ error: "Could not get links" });
-        }
+      .then((data) => {
         req.course = data;
         next();
+      })
+      .catch((err) => {
+        return res.status(400).json({ error: "Could not get links" });
       });
   } catch (error) {
     console.log(error);
@@ -111,11 +111,11 @@ const newLesson = (req, res) => {
         { new: true }
       )
       .populate("instructor", "_id name")
-      .exec((err, data) => {
-        if (err || !data) {
-          return res.status(400).json({ error: "Could not create lessons" });
-        }
+      .then((data) => {
         res.json(data);
+      })
+      .catch((err) => {
+        return res.status(400).json({ error: "Could not create lessons" });
       });
   } catch (error) {
     console.log(error);
@@ -160,24 +160,29 @@ const update = async (req, res) => {
   }
 };
 const remove = (req, res) => {
-  course.findByIdAndDelete(req.params.courseId).exec((err, data) => {
-    if (err || !data) {
+  course
+    .findByIdAndDelete(req.params.courseId)
+    .then((data) => {
+      if (!data) {
+        return res.status(400).json({ error: "Could not update course" });
+      }
+      res.json(data);
+    })
+    .catch((err) => {
       return res.status(400).json({ error: "Could not update course" });
-    }
-    res.json(data);
-  });
+    });
 };
 const getPublished = (req, res) => {
   course
     .find({ published: true })
     .populate("instructor", "_id name")
-    .exec((err, data) => {
-      if (err || !data) {
-        return res
-          .status(400)
-          .json({ error: "Could not find published courses" });
-      }
+    .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      return res
+        .status(400)
+        .json({ error: "Could not find published courses" });
     });
 };
 

@@ -6,12 +6,12 @@ const enrollmentById = async (req, res, next, id) => {
       .findById(id)
       .populate("student", "_id name")
       .populate({ path: "course", populate: { path: "instructor" } })
-      .exec((err, data) => {
-        if (!data || err) {
-          return res.status(403).json({ error: "Unable to get enrollment" });
-        }
+      .then((data) => {
         req.enrollment = data;
         next();
+      })
+      .catch((err) => {
+        return res.status(403).json({ error: "Unable to get enrollment" });
       });
   } catch (error) {
     console.log(error);
@@ -88,13 +88,13 @@ const listEnrolled = (req, res) => {
       .find({ student: req.user._id })
       .sort({ completedAt: 1 })
       .populate("course", "_id name category")
-      .exec((err, result) => {
-        if (err || !result) {
-          return res
-            .status(400)
-            .json({ error: "Could not get enrolled courses" });
-        }
+      .then((data) => {
         res.json(result);
+      })
+      .catch((err) => {
+        return res
+          .status(400)
+          .json({ error: "Could not get enrolled courses" });
       });
   } catch (error) {
     console.log(error);
