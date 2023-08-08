@@ -89,7 +89,7 @@ const listEnrolled = (req, res) => {
       .sort({ completedAt: 1 })
       .populate("course", "_id name category")
       .then((data) => {
-        res.json(result);
+        res.json(data);
       })
       .catch((err) => {
         return res
