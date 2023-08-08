@@ -13,11 +13,13 @@ const signin = async (req, res) => {
       expiresIn: "1d",
     });
     user.password = undefined;
+    console.log(token);
     res.cookie("token", token, {
-      // httpOnly: true,
-      secure: false, // only works on https
-      // sameSite: "none",
+      secure: true,
+      domain: process.env.CLIENT_URL,
+      sameSite: "none",
     });
+    res.cook;
     return res.json({ success: "Sign in successful", user });
   } catch (error) {
     return res.status(402).json({ error: "Could not sign in" });
