@@ -15,7 +15,7 @@ const signIn = expressJwt({
   algorithms: ["HS256"],
   credentialsRequired: true,
   getToken: function fromHeaderOrQuerystring(req) {
-    console.log(req.cookies);
+    console.log(req.cookies, "cookies");
     if (req.cookies && req.cookies.token) {
       return req.cookies.token;
     }
